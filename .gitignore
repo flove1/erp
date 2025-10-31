@@ -1,0 +1,9 @@
+node_modules/
+dist/
+
+.eslintcache
+
+.env
+
+/others
+uploads/

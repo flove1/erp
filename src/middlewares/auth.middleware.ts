@@ -1,11 +1,12 @@
 import config from "config";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { TokenPayload } from "services/token.service";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: TokenPayload;
     }
   }
 }
@@ -19,7 +20,11 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 
   try {
     const payload = jwt.verify(token, config.JWT.SECRET);
-    req.user = payload;
+    if (typeof payload === "string") {
+      return res.status(401).json({ error: "Invalid token payload" });
+    }
+
+    req.user = payload as TokenPayload;
     next();
   } catch (e) {
     return res.status(401).json({ error: "Invalid or expired token" });

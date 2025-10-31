@@ -11,7 +11,7 @@ export class FileMetadata {
   @Column({ type: "varchar", length: 255 })
   mimetype: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "integer" })
   size: number;
 }
 

@@ -7,9 +7,13 @@ export const idSchema = z.object({
   id: z.string().regex(/^\d+$/),
 });
 
+export const uuidSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export const listQuerySchema = z.object({
-  page: z.coerce.number().default(1),
-  list_size: z.coerce.number().default(10),
+  page: z.coerce.number().gte(1).default(1),
+  list_size: z.coerce.number().gt(0).default(10),
 });
 
 export const paginationSchema = z.object({
@@ -18,4 +22,4 @@ export const paginationSchema = z.object({
   total: z.number(),
 });
 
-export const commonSchemas = { idSchema, listQuerySchema, paginationSchema };
+export const commonSchemas = { idSchema, uuidSchema, listQuerySchema, paginationSchema };

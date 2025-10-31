@@ -2,8 +2,11 @@ import { Router } from 'express';
 import { authController } from './auth.controller';
 import { authMiddleware } from 'middlewares/auth.middleware';
 import { authRegistry as registry, authSchemas } from './auth.schemas';
+import { RouteParameter } from "@asteasolutions/zod-to-openapi/dist/openapi-registry";
 
 const router = Router();
+
+type ty = RouteParameter
 
 router.post('/signup', authController.signup);
 registry.registerPath({
@@ -27,7 +30,6 @@ registry.registerPath({
 });
 
 router.post('/signin', authController.signin);
-
 registry.registerPath({
   method: 'post',
   path: '/signin',
@@ -54,12 +56,12 @@ registry.registerPath({
   method: 'post',
   path: '/signin/new_token',
   tags: ['Auth'],
-  summary: 'Refresh authentication tokens',
+  summary: 'Refresh authentication tokens using refresh token in cookie or body',
+  security: [{ bearerAuth: [] }],
   request: {
     body: {
       content: { 'application/json': { schema: authSchemas.refreshTokenSchema } },
     },
-    cookies: authSchemas.refreshTokenSchema,
   },
   responses: {
     200: {
@@ -87,12 +89,12 @@ registry.registerPath({
 });
 
 router.post('/logout', authController.logout);
-
 registry.registerPath({
   method: 'post',
   path: '/logout',
   tags: ['Auth'],
-  summary: 'Logout the authenticated user',
+  summary: 'Logout the authenticated user through refresh token in cookie or body',
+  security: [{ bearerAuth: [] }],
   request: {
     body: {
       content: { 'application/json': { schema: authSchemas.logoutRequestSchema } },

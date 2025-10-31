@@ -1,4 +1,5 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import config from "config";
 import { authRegistry } from 'routes/auth/auth.schemas';
 import { fileRegistry } from 'routes/file/file.routes';
 
@@ -26,7 +27,7 @@ export const swaggerSpec = generator.generateDocument({
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: `http://${config.API.HOST}:${config.API.PORT}`,
       description: 'Local server',
     },
   ],

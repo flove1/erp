@@ -12,7 +12,7 @@ async function signup(req: Request, res: Response<z.infer<typeof authSchemas.tok
   const body = authSchemas.signupRequestSchema.parse(req.body);
   const tokens = await authService.signup(body.id, body.password);
 
-  res.cookie(refreshTokenCookie, refreshToken, {
+  res.cookie(refreshTokenCookie, tokens.refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -28,7 +28,7 @@ async function signin(req: Request, res: Response<z.infer<typeof authSchemas.tok
   const body = authSchemas.signinRequestSchema.parse(req.body);
   const tokens = await authService.signin(body.id, body.password);
 
-  res.cookie(refreshTokenCookie, refreshToken, {
+  res.cookie(refreshTokenCookie, tokens.refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -42,16 +42,16 @@ async function signin(req: Request, res: Response<z.infer<typeof authSchemas.tok
 
 async function refreshToken(req: Request, res: Response<z.infer<typeof authSchemas.tokensResponseSchema>>) {
   const refreshToken =
-    req.cookies?.refreshToken ??
-    authSchemas.refreshTokenSchema.safeParse(req.body).data?.refreshToken;
+    authSchemas.refreshTokenSchema.safeParse(req.body).data?.refreshToken ??
+    req.cookies?.refreshToken;
 
   if (!refreshToken) {
-    throw new HttpException(401, 'No refresh token in cookies provided');
+    throw new HttpException(401, 'No refreshToken in cookies or body is provided');
   }
 
   const tokens = await tokenService.refreshToken(refreshToken);
 
-  res.cookie(refreshTokenCookie, refreshToken, {
+  res.cookie(refreshTokenCookie, tokens.refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -64,13 +64,19 @@ async function refreshToken(req: Request, res: Response<z.infer<typeof authSchem
 }
 
 async function info(req: Request, res: Response<z.infer<typeof authSchemas.infoResponseSchema>>) {
-  const sanitized = authSchemas.infoResponseSchema.parse({ id: req.user.id });
+  const sanitized = authSchemas.infoResponseSchema.parse({ id: req.user!.id });
 
   res.json(sanitized);
 }
 
 async function logout(req: Request, res: Response<ApiResponse>) {
-  const body = authSchemas.logoutRequestSchema.parse(req.body);
+  const refreshToken =
+    authSchemas.refreshTokenSchema.safeParse(req.body).data?.refreshToken ??
+    req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    throw new HttpException(401, 'No refreshToken in cookies or body is provided');
+  }
 
   res.clearCookie(refreshTokenCookie, {
     httpOnly: true,
@@ -78,7 +84,9 @@ async function logout(req: Request, res: Response<ApiResponse>) {
     sameSite: "strict",
   })
 
-  await authService.logout(body.refreshToken);
+  await authService.logout(refreshToken);
+
+  res.sendStatus(200);
 }
 
 export const authController = { signup, signin, refreshToken, info, logout };

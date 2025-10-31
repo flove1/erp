@@ -5,7 +5,6 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { commonSchemas } from "common/schemas/common.schemas";
 import { fileSchemas } from "./file.schemas";
 import multer from 'multer';
-import z from 'zod';
 
 const router = Router();
 const registry = new OpenAPIRegistry();
@@ -43,11 +42,11 @@ registry.registerPath({
   summary: 'Update an existing file',
   security: [{ bearerAuth: [] }],
   request: {
-    params: commonSchemas.idSchema,
+    params: commonSchemas.uuidSchema,
     body: {
       content: {
         'multipart/form-data': {
-          schema: z.object({ file: z.any() }),
+          schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } },
         },
       },
     },
@@ -78,7 +77,7 @@ registry.registerPath({
   tags: ['File'],
   summary: 'Get file info',
   security: [{ bearerAuth: [] }],
-  request: { params: commonSchemas.idSchema },
+  request: { params: commonSchemas.uuidSchema },
   responses: {
     200: { description: 'File info', content: { 'application/json': { schema: fileSchemas.fileRecordSchema } } },
   },
@@ -91,10 +90,17 @@ registry.registerPath({
   tags: ['File'],
   summary: 'Download a file',
   security: [{ bearerAuth: [] }],
-  request: { params: commonSchemas.idSchema },
+  request: { params: commonSchemas.uuidSchema },
   responses: {
-    200: { description: 'File stream', content: { 'application/octet-stream': { schema: { type: 'string', format: 'binary' } } } },
-  },
+    200: {
+      description: 'File stream',
+      content: {
+        'application/octet-stream': {
+          schema: { type: 'string', format: 'binary' }
+        }
+      }
+    }
+  }
 });
 
 router.delete('/delete/:id', fileController.deleteFile);
@@ -104,7 +110,7 @@ registry.registerPath({
   tags: ['File'],
   summary: 'Delete a file',
   security: [{ bearerAuth: [] }],
-  request: { params: commonSchemas.idSchema },
+  request: { params: commonSchemas.uuidSchema },
   responses: {
     200: { description: 'File deleted' },
   },

@@ -1,29 +1,46 @@
 # API for ERD
 
-Run the API and database with a single command, then open the docs.
+Run the API and database, then open the documentation.
 
-- Requirements: Docker + Docker Compose
+## Requirements
+
+* Docker
+* Docker Compose
 
 ## Start with Docker
 
-1. Start everything
-  - `docker compose up -d --build`
+1. Start everything:
 
-2. Open the API docs
-  - [http://localhost:3000/](http://localhost:3000/) (auto-redirects to `/docs`)
-  - Or directly: [http://localhost:3000/docs](http://localhost:3000/docs)
+   ```bash
+   docker compose up -d --build
+   ```
 
-## Start Locally (without Docker)
+2. Open the API docs:
+
+   * [http://localhost:3000/](http://localhost:3000/) (auto-redirects to `/docs`)
+   * Or directly: [http://localhost:3000/docs](http://localhost:3000/docs)
+
+## Start Locally (Without Docker)
 
 1. Copy the example environment file:
-  - `cp .env.example .env`
+
+   ```bash
+   cp .env.example .env
+   ```
 
 2. Install dependencies:
-  - `npm install`
+
+   ```bash
+   npm install
+   ```
 
 3. Start the development server:
-  - `npm run start:dev`
+
+   ```bash
+   npm run start:dev
+   ```
 
 4. Open the API docs:
-  - [http://localhost:3000/](http://localhost:3000/) (auto-redirects to `/docs`)
-  - Or directly: [http://localhost:3000/docs](http://localhost:3000/docs)
+
+   * [http://localhost:3000/](http://localhost:3000/) (auto-redirects to `/docs`)
+   * Or directly: [http://localhost:3000/docs](http://localhost:3000/docs)

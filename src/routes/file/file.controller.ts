@@ -11,10 +11,6 @@ async function uploadFile(req: Request, res: Response<z.infer<typeof fileSchemas
     throw new HttpException(400, 'No file uploaded');
   }
 
-  file.originalname = Buffer
-    .from(file.originalname, "latin1")
-    .toString("utf8");
-
   const record = await fileService.uploadFile({ file, userId: req.user!.id });
   const sanitized = fileSchemas.fileRecordSchema.parse(record);
 
@@ -69,10 +65,6 @@ async function updateFile(req: Request, res: Response<z.infer<typeof fileSchemas
 
   const file = req.file;
   if (!file) throw new HttpException(400, 'No file uploaded');
-
-  file.originalname = Buffer
-    .from(file.originalname, "latin1")
-    .toString("utf8");
 
   const updated = await fileService.updateFile(params.id, file);
   const sanitized = fileSchemas.fileRecordSchema.parse(updated);

@@ -4,6 +4,7 @@ import { fileController } from "./file.controller";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { commonSchemas } from "common/schemas/common.schemas";
 import { fileSchemas } from "./file.schemas";
+import { decodeFilenameMiddleware } from "middlewares/decode-filename.middleware";
 import multer from 'multer';
 
 const router = Router();
@@ -12,7 +13,7 @@ const registry = new OpenAPIRegistry();
 router.use(authMiddleware);
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/upload', upload.single('file'), fileController.uploadFile);
+router.post('/upload', upload.single('file'), decodeFilenameMiddleware, fileController.uploadFile);
 registry.registerPath({
   method: 'post',
   path: '/file/upload',
@@ -34,7 +35,7 @@ registry.registerPath({
   },
 });
 
-router.put('/update/:id', upload.single('file'), fileController.updateFile);
+router.put('/update/:id', upload.single('file'), decodeFilenameMiddleware, fileController.updateFile);
 registry.registerPath({
   method: 'put',
   path: '/file/update/{id}',

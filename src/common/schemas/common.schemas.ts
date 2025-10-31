@@ -1,14 +1,11 @@
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-
-extendZodWithOpenApi(z);
 
 export const idSchema = z.object({
   id: z.string().regex(/^\d+$/),
 });
 
 export const uuidSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
 });
 
 export const listQuerySchema = z.object({

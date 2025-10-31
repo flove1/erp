@@ -1,8 +1,8 @@
 import { AppDataSource } from 'db/datasource';
 import { UserEntity } from '../db/entities/user.entity';
 import { tokenService } from "./token.service";
-import bcrypt from 'bcrypt';
 import { HttpException } from "exceptions";
+import bcrypt from 'bcrypt';
 
 const userRepo = AppDataSource.getRepository(UserEntity);
 

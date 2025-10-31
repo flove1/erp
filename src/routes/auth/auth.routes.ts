@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { authController } from './auth.controller';
 import { authMiddleware } from 'middlewares/auth.middleware';
-import { authRegistry as registry, authSchemas } from './auth.schemas';
-import { RouteParameter } from "@asteasolutions/zod-to-openapi/dist/openapi-registry";
+import { authSchemas } from './auth.schemas';
+import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi/dist/openapi-registry";
 
 const router = Router();
-
-type ty = RouteParameter
+const registry = new OpenAPIRegistry();
 
 router.post('/signup', authController.signup);
 registry.registerPath({

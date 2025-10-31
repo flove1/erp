@@ -3,8 +3,8 @@ import { ApiResponse } from 'responses';
 import { authService } from 'services/auth.service';
 import { tokenService } from 'services/token.service';
 import { authSchemas } from './auth.schemas';
-import z from 'zod';
 import { HttpException } from 'exceptions';
+import z from 'zod';
 
 const refreshTokenCookie = "refreshToken";
 

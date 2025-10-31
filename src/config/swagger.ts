@@ -1,5 +1,5 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { authRegistry } from '../routes/auth/auth.schemas';
+import { authRegistry } from 'routes/auth/auth.schemas';
 import { fileRegistry } from 'routes/file/file.routes';
 
 const registry = new OpenAPIRegistry();

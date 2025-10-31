@@ -1,0 +1,44 @@
+name: app
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-app}
+      MYSQL_USER: ${DB_USER:-user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
+    ports:
+      - ${DB_PORT}:3306
+    volumes:
+      - mysql_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    container_name: api
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-mysql}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-app}
+
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret}
+
+      FILE_UPLOAD_DIR: ${FILE_UPLOAD_DIR:-./uploads}
+    ports:
+      - ${API_PORT:-3000}:3000
+
+volumes:
+  mysql_db_data:

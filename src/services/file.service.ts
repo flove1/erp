@@ -1,9 +1,9 @@
 import { AppDataSource } from 'db/datasource';
-import { FileEntity } from '../db/entities/file.entity';
-import { UserEntity } from '../db/entities/user.entity';
+import { FileEntity } from 'db/entities/file.entity';
+import { UserEntity } from 'db/entities/user.entity';
+import config from 'config';
 import fs from 'fs';
 import path from 'path';
-import config from 'config';
 
 const userRepo = AppDataSource.getRepository(UserEntity);
 const fileRepo = AppDataSource.getRepository(FileEntity);

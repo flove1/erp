@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookierParser())
 
-app.get('/', (req, res) => res.send('Welcome to the API'));
+app.get('/', (req, res) => res.redirect('/docs'));
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(authRoutes);

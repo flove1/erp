@@ -1,1 +1,1 @@
-export { default as fileRoutes } from './file.routes';
+export * from './file.routes';

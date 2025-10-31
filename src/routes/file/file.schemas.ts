@@ -1,7 +1,23 @@
-import { z } from 'zod';
+import { commonSchemas } from 'common/schemas/common.schemas';
+import z from 'zod';
 
-export const idSchema = z.object({ id: z.string().regex(/^\d+$/) });
-export const listQuerySchema = z.object({
-  page: z.coerce.number().default(1),
-  list_size: z.coerce.number().default(10),
-});
+const fileRecordSchema = z
+  .object({
+    id: z.string(),
+    uploadedAt: z.date(),
+    metadata: z.object({
+      filename: z.string().optional(),
+      extension: z.string().optional(),
+      size: z.number().optional(),
+      mimetype: z.string().optional(),
+    }),
+  })
+  .strip();
+
+const listFilesResponseSchema = z
+  .object({
+    files: z.array(fileRecordSchema),
+  })
+  .extend(commonSchemas.paginationSchema.shape);
+
+export const fileSchemas = { fileRecordSchema, listFilesResponseSchema };

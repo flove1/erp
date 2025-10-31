@@ -1,6 +1,23 @@
-import swaggerJSDoc, { Options, SwaggerDefinition } from 'swagger-jsdoc';
+import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { authRegistry } from '../routes/auth/auth.schemas';
+import { fileRegistry } from 'routes/file/file.routes';
 
-const swaggerDefinition: SwaggerDefinition = {
+const registry = new OpenAPIRegistry();
+registry.registerComponent('securitySchemes', 'bearerAuth', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+});
+
+const definitions = [
+  ...registry.definitions,
+  ...authRegistry.definitions,
+  ...fileRegistry.definitions,
+];
+
+const generator = new OpenApiGeneratorV3(definitions);
+
+export const swaggerSpec = generator.generateDocument({
   openapi: '3.0.0',
   info: {
     title: 'ERP.AERO API',
@@ -13,21 +30,4 @@ const swaggerDefinition: SwaggerDefinition = {
       description: 'Local server',
     },
   ],
-  components: {
-    securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-    },
-  },
-  security: [{ bearerAuth: [] }],
-};
-
-const options: Options = {
-  swaggerDefinition,
-  apis: ['./src/routes/*.ts'],
-};
-
-export const swaggerSpec = swaggerJSDoc(options);
+});

@@ -4,7 +4,6 @@ import { UserEntity } from '../db/entities/user.entity';
 import fs from 'fs';
 import path from 'path';
 import config from 'config';
-import Stream from 'stream';
 
 const userRepo = AppDataSource.getRepository(UserEntity);
 const fileRepo = AppDataSource.getRepository(FileEntity);
@@ -33,11 +32,9 @@ async function uploadFile({ file, userId }: { file: Express.Multer.File; userId:
 
   await fileRepo.save(entity);
 
-  // Save file to disk as uploads/{id}
   const storagePath = path.join(config.FILE.UPLOAD_DIR, String(entity.id));
   fs.writeFileSync(storagePath, file.buffer);
 
-  // Optionally, return filePath for download route
   return entity;
 }
 

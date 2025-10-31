@@ -1,7 +1,8 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import config from "config";
-import { authRegistry } from 'routes/auth/auth.schemas';
-import { fileRegistry } from 'routes/file/file.routes';
+
+import { authRegistry } from 'routes/auth';
+import { fileRegistry } from 'routes/file';
 
 const registry = new OpenAPIRegistry();
 registry.registerComponent('securitySchemes', 'bearerAuth', {
